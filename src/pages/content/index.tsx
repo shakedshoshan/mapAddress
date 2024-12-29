@@ -1,5 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import './style.css' 
+import Browser from 'webextension-polyfill';
+
 const div = document.createElement('div');
 div.id = '__root';
 document.body.appendChild(div);
@@ -12,6 +14,18 @@ root.render(
     content script <span className='your-class'>loaded</span>
   </div>
 );
+
+interface Message {
+  type: string;
+}
+
+Browser.runtime.onMessage.addListener((message: unknown, sender, sendResponse) => {
+  const msg = message as Message;
+  if (msg.type === 'POPUP_BUTTON_CLICKED') {
+    console.log('Button clicked in popup!');
+  }
+  return true;
+});
 
 try {
   console.log('content script loaded');
